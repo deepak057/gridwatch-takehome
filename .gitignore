@@ -1,0 +1,26 @@
+# --- Internal process / AI tooling — NEVER publish to the delivery repo ---
+docs/superpowers/
+docs/glossary-plain-english.md
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+
+# --- Node ---
+node_modules/
+dist/
+build/
+*.log
+.env
+.env.*
+
+# --- Terraform ---
+**/.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+crash.log
+
+# --- OS ---
+.DS_Store
+Thumbs.db
