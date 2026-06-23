@@ -1,0 +1,46 @@
+{
+  "operators": [
+    { "operator_id": "acme-charge", "name": "ACME Charge", "country": "IN", "currency": "INR" },
+    { "operator_id": "stadtwerke-ev", "name": "Stadtwerke EV", "country": "DE", "currency": "EUR" }
+  ],
+  "sites": [
+    {
+      "site_id": "S-IN-0007",
+      "operator_id": "acme-charge",
+      "name": "Sector 18 Metro",
+      "address": "Sector 18, Noida, Uttar Pradesh, India",
+      "lat": 28.5709,
+      "lng": 77.3260
+    },
+    {
+      "site_id": "S-IN-0012",
+      "operator_id": "acme-charge",
+      "name": "Phoenix Mall",
+      "address": "Whitefield, Bengaluru, Karnataka, India",
+      "lat": 12.9959,
+      "lng": 77.6967
+    },
+    {
+      "site_id": "S-DE-0003",
+      "operator_id": "stadtwerke-ev",
+      "name": "Hauptbahnhof P2",
+      "address": "Hauptbahnhof, Stuttgart, Baden-Württemberg, Germany",
+      "lat": 48.7838,
+      "lng": 9.1817
+    }
+  ],
+  "chargers": [
+    { "charger_id": "C-IN-0007-A", "site_id": "S-IN-0007" },
+    { "charger_id": "C-IN-0007-B", "site_id": "S-IN-0007" },
+    { "charger_id": "C-IN-0012-A", "site_id": "S-IN-0012" },
+    { "charger_id": "C-DE-0003-A", "site_id": "S-DE-0003" }
+  ],
+  "connectors": [
+    { "charger_id": "C-IN-0007-A", "connector_id": "1" },
+    { "charger_id": "C-IN-0007-A", "connector_id": "2" },
+    { "charger_id": "C-IN-0007-B", "connector_id": "1" },
+    { "charger_id": "C-IN-0012-A", "connector_id": "1" },
+    { "charger_id": "C-DE-0003-A", "connector_id": "1" },
+    { "charger_id": "C-DE-0003-A", "connector_id": "2" }
+  ]
+}
