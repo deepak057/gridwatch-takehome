@@ -121,5 +121,6 @@ In priority order, the next things I'd build:
 
 ## Notes for the reviewer
 
+- **Platforms:** verified on Docker Desktop (Windows/WSL2, amd64). The app image (`node:20-slim`) is multi-arch. The official PostGIS image is amd64-only, so the DB service pins `platform: linux/amd64` — it runs natively on amd64/Linux/CI and via Docker's emulation on Apple Silicon. The app self-seeds a small pilot dataset on every boot (using boot-time timestamps, so a restart stays fresh rather than going stale), so the endpoints return real data immediately after `docker compose up`.
 - Tests run serially against a live PostGIS (`jest.config.js` `maxWorkers: 1`; `jest.setup.ts` closes the pool after each file). The suite was hardened from an earlier flaky state — root cause was an unclean test teardown leaking pooled DB connections, fixed by a clean connection lifecycle (not by adding retries).
 - Everything in this README has been run and verified locally; the IaC bucket creation was proven live (Terraform created the bucket and the app wrote an object to it).

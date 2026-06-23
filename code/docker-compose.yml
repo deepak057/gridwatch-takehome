@@ -1,6 +1,9 @@
 services:
   db:
     image: postgis/postgis:16-3.4
+    # Official PostGIS images are amd64-only; pin the platform so the stack boots
+    # deterministically everywhere (native on amd64/Linux/CI, emulated on Apple Silicon).
+    platform: linux/amd64
     environment:
       POSTGRES_PASSWORD: gridwatch
       POSTGRES_USER: gridwatch
