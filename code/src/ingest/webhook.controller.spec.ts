@@ -4,6 +4,7 @@ import request = require('supertest');
 import { createHmac } from 'crypto';
 import { AppModule } from '../app.module';
 import { pool } from '../db/pool';
+import { flushWebhookIngestion } from './webhook.controller';
 
 const SECRET = 'test-secret';
 
@@ -19,10 +20,6 @@ const BATCH_EVENT = {
   power_w: 1500,
   ts: '2026-06-09T20:00:00+00:00',
 };
-
-function wait(ms: number): Promise<void> {
-  return new Promise((r) => setTimeout(r, ms));
-}
 
 let app: INestApplication;
 
@@ -59,8 +56,8 @@ describe('POST /webhook', () => {
 
     expect(resp.status).toBe(200);
 
-    // Give async processing time to complete
-    await wait(200);
+    // Drain all in-flight background ingestion before asserting
+    await flushWebhookIngestion();
 
     const { rows } = await pool.query('SELECT id FROM raw_events');
     expect(rows.length).toBe(1);
@@ -77,7 +74,7 @@ describe('POST /webhook', () => {
 
     expect(resp.status).toBe(401);
 
-    await wait(100);
+    await flushWebhookIngestion();
 
     const { rows } = await pool.query('SELECT id FROM raw_events');
     expect(rows.length).toBe(0);

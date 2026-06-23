@@ -10,6 +10,17 @@ import { normalise, MalformedEventError } from './normalise';
 import { ingest } from './inbox';
 import { deadLetter } from './dead-letter';
 
+// Registry of in-flight background ingestion promises.
+// Production: fire-and-forget (ack-first stays intact).
+// Tests: call flushWebhookIngestion() in afterEach to drain before asserting.
+const _inflight: Set<Promise<void>> = new Set();
+
+export async function flushWebhookIngestion(): Promise<void> {
+  while (_inflight.size > 0) {
+    await Promise.allSettled(Array.from(_inflight));
+  }
+}
+
 @Controller()
 export class WebhookController {
   @Post('webhook')
@@ -41,31 +52,38 @@ export class WebhookController {
     // Ack first
     res.status(200).json({ ok: true });
 
-    // Process asynchronously
-    setImmediate(async () => {
-      try {
-        const body = JSON.parse(rawBody.toString('utf8'));
-        const events: any[] = body?.events ?? [];
-        const good: ReturnType<typeof normalise>[] = [];
+    // Process asynchronously — register promise so tests can await via flushWebhookIngestion()
+    const work = new Promise<void>((resolve) => {
+      setImmediate(async () => {
+        try {
+          const body = JSON.parse(rawBody.toString('utf8'));
+          const events: any[] = body?.events ?? [];
+          const good: ReturnType<typeof normalise>[] = [];
 
-        for (const ev of events) {
-          try {
-            good.push(normalise(ev, 'webhook'));
-          } catch (err) {
-            if (err instanceof MalformedEventError) {
-              await deadLetter(ev, 'malformed');
-            } else {
-              throw err;
+          for (const ev of events) {
+            try {
+              good.push(normalise(ev, 'webhook'));
+            } catch (err) {
+              if (err instanceof MalformedEventError) {
+                await deadLetter(ev, 'malformed');
+              } else {
+                throw err;
+              }
             }
           }
-        }
 
-        if (good.length > 0) {
-          await ingest(good);
+          if (good.length > 0) {
+            await ingest(good);
+          }
+        } catch (err) {
+          console.error('Webhook async processing error:', err);
+        } finally {
+          resolve();
         }
-      } catch (err) {
-        console.error('Webhook async processing error:', err);
-      }
+      });
     });
+
+    _inflight.add(work);
+    work.finally(() => _inflight.delete(work));
   }
 }

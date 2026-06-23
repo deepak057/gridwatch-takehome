@@ -2,7 +2,7 @@ import { pool } from './pool';
 import { runMigrations } from './migrate';
 
 afterAll(async () => {
-  await pool.end();
+  // pool is shared across suites; do not end it here
 });
 
 describe('runMigrations', () => {

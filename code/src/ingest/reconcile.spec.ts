@@ -7,7 +7,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await pool.end();
+  // pool is shared across suites; do not end it here
 });
 
 describe('reconcile - out-of-order status (stub 2c)', () => {

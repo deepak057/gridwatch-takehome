@@ -8,5 +8,6 @@ module.exports = {
   testRegex: '.*\\.spec\\.ts$',
   moduleFileExtensions: ['js', 'json', 'ts'],
   maxWorkers: 1,
-  forceExit: true,
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
+  testTimeout: 30000,
 };

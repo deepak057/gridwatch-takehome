@@ -1,5 +1,6 @@
 # --- Internal process / AI tooling — NEVER publish to the delivery repo ---
 docs/superpowers/
+.superpowers/
 docs/glossary-plain-english.md
 .claude/
 CLAUDE.md
