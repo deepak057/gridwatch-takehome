@@ -7,6 +7,8 @@ services:
       POSTGRES_PASSWORD: gridwatch
       POSTGRES_USER: gridwatch
       POSTGRES_DB: gridwatch
+    ports:
+      - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
