@@ -9,7 +9,7 @@ export class HealthController {
       await pool.query('SELECT 1');
       return { status: 'ok', db: true };
     } catch {
-      return { status: 'ok', db: false };
+      return { status: 'error', db: false };
     }
   }
 }

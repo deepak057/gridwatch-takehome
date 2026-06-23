@@ -35,6 +35,7 @@ export async function drain(): Promise<number> {
       `SELECT id, payload FROM raw_events
        WHERE processed_at IS NULL
        ORDER BY id
+       LIMIT 500
        FOR UPDATE SKIP LOCKED`,
     );
 

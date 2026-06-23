@@ -60,6 +60,7 @@ describe('pollSite()', () => {
     });
 
     expect(result.ingested).toBe(1);
+    expect(result.retries).toBeGreaterThanOrEqual(1);
     const { rows } = await pool.query('SELECT id FROM raw_events');
     expect(rows.length).toBe(1);
   });

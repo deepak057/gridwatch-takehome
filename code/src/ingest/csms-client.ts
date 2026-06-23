@@ -37,13 +37,21 @@ export async function pollSite(
     let attempts = 0;
 
     // Retry loop for a single page (handles 429 and 500)
+    let retries429 = 0;
     while (true) {
       resp = await fetchPage(siteId, since, cursor);
 
       if (resp.status === 429) {
-        const retryAfter = parseInt(resp.headers['retry-after'] ?? '1', 10);
+        if (retries429 >= maxRetries) {
+          throw new Error(
+            `CSMS returned 429 for site=${siteId} after ${maxRetries} rate-limit retries`,
+          );
+        }
+        const rawAfter = parseInt(resp.headers['retry-after'] ?? '1', 10);
+        const retryAfter = Math.min(rawAfter, 60);
         await sleep(retryAfter * 1000);
         retries++;
+        retries429++;
         continue;
       }
 
